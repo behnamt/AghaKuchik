@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { createProvider } from 'reactn';
 import ReactDOM from 'react-dom';
+import addReactNDevTools from 'reactn-devtools';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import World from './features/World/World';
+import { INITIAL_STATE, INITIAL_REDUCERS } from './state/state';
+
+const StateProvider = createProvider(INITIAL_STATE, INITIAL_REDUCERS);
+
+addReactNDevTools(StateProvider);
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <StateProvider>
+      <World />
+    </StateProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
