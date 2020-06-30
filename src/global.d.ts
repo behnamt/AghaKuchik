@@ -1,3 +1,4 @@
+import { EAvatarDirection } from './config/constants';
 import 'reactn';
 
 declare module 'reactn/default' {
@@ -14,5 +15,6 @@ declare module 'reactn/default' {
       x: number,
       y: number,
     };
+    lastMove: EAvatarDirection;
   }
 }

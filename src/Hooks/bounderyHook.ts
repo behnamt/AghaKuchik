@@ -1,7 +1,12 @@
-import { MINIMUM_PASSABLE_MAP_TILE } from './../config/constants';
 import { useDispatch, useGlobal } from 'reactn';
 import { useState, useEffect } from 'react';
-import { CAMERA_HEIGHT, CAMERA_WIDTH, CAMERA_CENTER_X, CAMERA_CENTER_Y } from '../config/constants';
+import { CAMERA_HEIGHT, 
+  CAMERA_WIDTH, 
+  CAMERA_CENTER_X, 
+  CAMERA_CENTER_Y, 
+  MINIMUM_PASSABLE_MAP_TILE,
+  EAvatarDirection 
+} from '../config/constants';
 
 function useBoundery(district: number[][], dimensions: { row: number, col: number }) {
   const getPortion = (x: number, y: number): number[][] =>
@@ -22,9 +27,9 @@ function useBoundery(district: number[][], dimensions: { row: number, col: numbe
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position]);
 
-  const attemptToMove = (x: number, y: number) => {
+  const attemptToMove = (x: number, y: number, direction: EAvatarDirection) => {
     if (isInOfBounderies(x, y) && isPassable(x, y)) {
-      move(x, y);
+      move(x, y, direction);
     }
   };
 

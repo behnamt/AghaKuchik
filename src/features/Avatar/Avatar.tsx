@@ -1,65 +1,84 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGlobal } from 'reactn';
-import { SPRITE_WIDTH, CAMERA_CENTER_X, CAMERA_CENTER_Y } from '../../config/constants';
-import avatar from '../../sprites/avatar.png';
+import { CAMERA_CENTER_X, CAMERA_CENTER_Y, SPRITE_WIDTH, SPRITE_MOVEMENT_FRAMES, TILE_WIDTH, EAvatarDirection } from '../../config/constants';
 import { useBoundery } from '../../Hooks/bounderyHook';
+import avatar from './avatar.png';
 
 interface IAvatarProps {
   district: number[][];
   dimensions: { row: number, col: number };
 }
 
-const Avatar: React.FC<IAvatarProps> = (props:IAvatarProps) => {
-  const [top, setTop] = useState(0);
-  const [left, setLeft] = useState(0);
+enum EkeyboardCode {
+  Left = 37,
+  Up = 38,
+  Right = 39,
+  Down = 40,
+}
+
+interface ISpritePosition {
+  x: number;
+  y: number;
+}
+
+const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
+  const [top, setTop] = useState<number>(0);
+  const [left, setLeft] = useState<number>(0);
+  const [direction, setDirection] = useState<EAvatarDirection>(EAvatarDirection.Down);
+  const [spritePosition, setSpritePosition] = useState<ISpritePosition>({ x: 0, y: 0 });
   const [position] = useGlobal('position');
+
   const { attemptToMove } = useBoundery(props.district, props.dimensions);
 
-
-  const bindKeyboardListener = (event: KeyboardEvent) => {
+  const bindKeyboardListener = useCallback((event: KeyboardEvent) => {
     event.preventDefault();
+
     switch (event.keyCode) {
-      case 37:
-        attemptToMove(-1, 0);
+      case EkeyboardCode.Left:
+        direction === EAvatarDirection.Left ? attemptToMove(-1, 0, EAvatarDirection.Left) : setDirection(EAvatarDirection.Left);
         break;
-      case 38:
-        attemptToMove(0, -1);
+      case EkeyboardCode.Up:
+        direction === EAvatarDirection.Up ? attemptToMove(0, -1, EAvatarDirection.Up) : setDirection(EAvatarDirection.Up);
         break;
-      case 39:
-        attemptToMove(1, 0);
+      case EkeyboardCode.Right:
+        direction === EAvatarDirection.Right ? attemptToMove(1, 0, EAvatarDirection.Right) : setDirection(EAvatarDirection.Right);
         break;
-      case 40:
-        attemptToMove(0, 1);
+      case EkeyboardCode.Down:
+        direction === EAvatarDirection.Down ? attemptToMove(0, 1, EAvatarDirection.Down) : setDirection(EAvatarDirection.Down);
         break;
     }
-  };
+  }, [attemptToMove, direction]);
 
+  useEffect(() => {
+    setSpritePosition({ x: direction, y: 0 });
+  }, [direction]);
 
   useEffect(() => {
     document.addEventListener('keydown', bindKeyboardListener);
     return () => {
       document.removeEventListener('keydown', bindKeyboardListener);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [bindKeyboardListener]);
 
   useEffect(() => {
     const x = position.x < CAMERA_CENTER_X ? position.x : CAMERA_CENTER_X;
-    setLeft(x * SPRITE_WIDTH);
+    setLeft(x * TILE_WIDTH);
+
+    const y = position.y < CAMERA_CENTER_Y ? position.y : CAMERA_CENTER_Y;
+    setTop(y * TILE_WIDTH);
+
+    setSpritePosition({ x: direction, y: (spritePosition.y+1) % SPRITE_MOVEMENT_FRAMES });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position]);
 
-  useEffect(() => {
-    const y = position.y < CAMERA_CENTER_Y ? position.y : CAMERA_CENTER_Y;
-    setTop(y * SPRITE_WIDTH);
-  }, [position]);
   return (
     <div style={{
       position: 'absolute',
       backgroundImage: `url('${avatar}')`,
-      backgroundPositionX: 0,
-      backgroundPositionY: 0,
-      width: SPRITE_WIDTH,
-      height: SPRITE_WIDTH,
+      backgroundPositionX: spritePosition.x * SPRITE_WIDTH,
+      backgroundPositionY: spritePosition.y * SPRITE_WIDTH,
+      width: TILE_WIDTH,
+      height: TILE_WIDTH,
       top,
       left,
     }}

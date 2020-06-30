@@ -3,7 +3,6 @@ import Map from '../Map/Map';
 import Avatar from '../Avatar/Avatar';
 import { MAP_WIDTH, MAP_HEIGHT } from '../../config/constants';
 import { district1, dimensions } from '../../data/districts/1';
-import Camera from '../Camera/Camera';
 
 function World() {
   const [district, setDistrict] = useState<number[][] | null>(null);

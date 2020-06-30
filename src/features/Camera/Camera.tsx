@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { SPRITE_WIDTH, CAMERA_WIDTH, CAMERA_HEIGHT } from '../../config/constants';
+import { CAMERA_WIDTH, CAMERA_HEIGHT, TILE_WIDTH } from '../../config/constants';
 
 interface ICameraProps {
   district_dimensions: {col: number, row: number};
@@ -11,8 +11,8 @@ const Camera: React.FC<ICameraProps> = (props: ICameraProps) => {
       className="camera"
       style={{
         position: 'absolute',
-        width: SPRITE_WIDTH * CAMERA_WIDTH,
-        height: SPRITE_WIDTH * CAMERA_HEIGHT, 
+        width: TILE_WIDTH * CAMERA_WIDTH,
+        height: TILE_WIDTH * CAMERA_HEIGHT, 
       }}
     >
       {props.children}

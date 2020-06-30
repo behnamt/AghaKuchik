@@ -1,8 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 import React, { ReactElement } from 'react';
-import './Map.scss';
-import { SPRITE_WIDTH, CAMERA_WIDTH, CAMERA_HEIGHT, EMapTile } from '../../config/constants';
+import { CAMERA_HEIGHT, CAMERA_WIDTH, TILE_WIDTH } from '../../config/constants';
 import { useBoundery } from '../../Hooks/bounderyHook';
+import './Map.scss';
+import Tile from '../Tile/Tile';
 
 interface IMapProps {
   children: ReactElement
@@ -13,27 +14,28 @@ interface IMapProps {
 const Map: React.FC<IMapProps> = (props: IMapProps) => {
 
   const { currentPortion } = useBoundery(props.district, props.dimensions);
+  
 
-  function getTileType(type: number): string {
-    switch (type) {
-      case EMapTile.Grass:
-        return 'grass';
-      case EMapTile.Rock:
-        return 'rock';
-      case EMapTile.Tree:
-      default:
-        return 'tree';
-    }
-
-  }
+  // const getNeighbours = (row: number, col: number): INeighbours => {
+  //   const leftNeighbour = col === 0 ? -1 : currentPortion[row][col - 1];
+  //   const topNeighbour = row === 0 ? -1 : currentPortion[row - 1][col];
+  //   const rightNeighbor = col === CAMERA_WIDTH - 1 ? -1 : currentPortion[row][col + 1];
+  //   const bottomNeighbour = row === CAMERA_HEIGHT - 1 ? -1 : currentPortion[row + 1][col];
+  //   return {
+  //     left: leftNeighbour,
+  //     top: topNeighbour,
+  //     right: rightNeighbor,
+  //     bottom: bottomNeighbour,
+  //   };
+  // };
 
   return (
     <div
       className="map"
       style={{
         position: 'relative',
-        height: CAMERA_HEIGHT * SPRITE_WIDTH,
-        width: CAMERA_WIDTH * SPRITE_WIDTH,
+        height: CAMERA_HEIGHT * TILE_WIDTH,
+        width: CAMERA_WIDTH * TILE_WIDTH,
       }}
     >
       {
@@ -43,7 +45,7 @@ const Map: React.FC<IMapProps> = (props: IMapProps) => {
               {
                 row.map((tile: number, colIndex: number) => {
                   return (
-                    <div key={colIndex} className={`tile tile--${getTileType(tile)}`} />
+                    <Tile key={colIndex} type={tile} />
                   );
                 })
               }
