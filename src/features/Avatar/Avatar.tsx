@@ -24,30 +24,31 @@ interface ISpritePosition {
 const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
   const [top, setTop] = useState<number>(0);
   const [left, setLeft] = useState<number>(0);
-  const [direction, setDirection] = useState<EAvatarDirection>(EAvatarDirection.Down);
   const [spritePosition, setSpritePosition] = useState<ISpritePosition>({ x: 0, y: 0 });
   const [position] = useGlobal('position');
+  const [direction] = useGlobal('direction');
 
-  const { attemptToMove } = useBoundery(props.district, props.dimensions);
+  const { attemptToMove, changeDirection } = useBoundery(props.district, props.dimensions);
 
   const bindKeyboardListener = useCallback((event: KeyboardEvent) => {
     event.preventDefault();
 
     switch (event.keyCode) {
       case EkeyboardCode.Left:
-        direction === EAvatarDirection.Left ? attemptToMove(-1, 0, EAvatarDirection.Left) : setDirection(EAvatarDirection.Left);
+        direction === EAvatarDirection.Left ? attemptToMove(-1, 0, EAvatarDirection.Left) : changeDirection(EAvatarDirection.Left);
         break;
       case EkeyboardCode.Up:
-        direction === EAvatarDirection.Up ? attemptToMove(0, -1, EAvatarDirection.Up) : setDirection(EAvatarDirection.Up);
+        direction === EAvatarDirection.Up ? attemptToMove(0, -1, EAvatarDirection.Up) : changeDirection(EAvatarDirection.Up);
         break;
       case EkeyboardCode.Right:
-        direction === EAvatarDirection.Right ? attemptToMove(1, 0, EAvatarDirection.Right) : setDirection(EAvatarDirection.Right);
+        direction === EAvatarDirection.Right ? attemptToMove(1, 0, EAvatarDirection.Right) : changeDirection(EAvatarDirection.Right);
         break;
       case EkeyboardCode.Down:
-        direction === EAvatarDirection.Down ? attemptToMove(0, 1, EAvatarDirection.Down) : setDirection(EAvatarDirection.Down);
+        direction === EAvatarDirection.Down ? attemptToMove(0, 1, EAvatarDirection.Down) : changeDirection(EAvatarDirection.Down);
         break;
     }
-  }, [attemptToMove, direction]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attemptToMove]);
 
   useEffect(() => {
     setSpritePosition({ x: direction, y: 0 });

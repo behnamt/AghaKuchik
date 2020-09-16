@@ -5,3 +5,13 @@ export interface INeighbours {
   right: number;
   bottom: number;
 }
+
+export interface IPosition {
+  x: number;
+  y: number;
+}
+
+export interface IGraphIndex {
+  col: number;
+  row: number;
+}

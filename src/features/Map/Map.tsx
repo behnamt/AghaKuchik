@@ -1,9 +1,11 @@
 /* eslint-disable react/no-array-index-key */
 import React, { ReactElement } from 'react';
+import { useGlobal } from 'reactn';
 import { CAMERA_HEIGHT, CAMERA_WIDTH, TILE_WIDTH } from '../../config/constants';
-import { useBoundery } from '../../Hooks/bounderyHook';
+import { useShortestPath } from '../../Hooks/shortestPathHook';
 import './Map.scss';
 import Tile from '../Tile/Tile';
+import { useBoundery } from '../../Hooks/bounderyHook';
 
 interface IMapProps {
   children: ReactElement
@@ -12,22 +14,18 @@ interface IMapProps {
 }
 
 const Map: React.FC<IMapProps> = (props: IMapProps) => {
-
-  const { currentPortion } = useBoundery(props.district, props.dimensions);
   
+  const { getShortestPath } = useShortestPath(props.district, props.dimensions);
+  const { walk, currentPortion } = useBoundery(props.district, props.dimensions);
+  const [position] = useGlobal('position');
 
-  // const getNeighbours = (row: number, col: number): INeighbours => {
-  //   const leftNeighbour = col === 0 ? -1 : currentPortion[row][col - 1];
-  //   const topNeighbour = row === 0 ? -1 : currentPortion[row - 1][col];
-  //   const rightNeighbor = col === CAMERA_WIDTH - 1 ? -1 : currentPortion[row][col + 1];
-  //   const bottomNeighbour = row === CAMERA_HEIGHT - 1 ? -1 : currentPortion[row + 1][col];
-  //   return {
-  //     left: leftNeighbour,
-  //     top: topNeighbour,
-  //     right: rightNeighbor,
-  //     bottom: bottomNeighbour,
-  //   };
-  // };
+  const handleClick = (destination: { row: number, col: number }) => {
+    const path = getShortestPath(position, destination);
+    walk(path);
+  };
+
+ 
+
 
   return (
     <div
@@ -45,7 +43,7 @@ const Map: React.FC<IMapProps> = (props: IMapProps) => {
               {
                 row.map((tile: number, colIndex: number) => {
                   return (
-                    <Tile key={colIndex} type={tile} />
+                    <Tile key={colIndex} type={tile} row={rowIndex} col={colIndex} handleClick={handleClick} />
                   );
                 })
               }

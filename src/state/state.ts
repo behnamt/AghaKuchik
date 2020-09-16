@@ -5,16 +5,18 @@ const INITIAL_STATE = {
     x: 0,
     y: 0,
   },
-  lastMove: EAvatarDirection.None,
+  direction: EAvatarDirection.Down,
 };
   
 const INITIAL_REDUCERS = {
-  move: (state: any, a: any, x: number, y: number, direction: EAvatarDirection)=> ({
+  move: (state: any, a: any, x: number, y: number)=> ({
     position: {
       x: state.position.x + x,
       y: state.position.y + y,
     },
-    lastMove: direction,
+  }),
+  direct: (state: any, a: any, direction: EAvatarDirection)=> ({
+    direction,
   }),
 };
   
