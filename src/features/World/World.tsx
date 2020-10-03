@@ -9,7 +9,6 @@ function World() {
 
   useEffect(() => {
     setDistrict(district1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

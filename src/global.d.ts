@@ -1,6 +1,6 @@
-import { EAvatarDirection } from './config/constants';
 import 'reactn';
 import { IPosition } from './@types/Map';
+import { EAvatarDirection } from './config/Enums';
 
 declare module 'reactn/default' {
   export interface Reducers {

@@ -1,10 +1,10 @@
-import React, { createProvider } from 'reactn';
 import ReactDOM from 'react-dom';
+import React, { createProvider } from 'reactn';
 import addReactNDevTools from 'reactn-devtools';
+import World from './features/World/World';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import World from './features/World/World';
-import { INITIAL_STATE, INITIAL_REDUCERS } from './state/state';
+import { INITIAL_REDUCERS, INITIAL_STATE } from './state/state';
 
 const StateProvider = createProvider(INITIAL_STATE, INITIAL_REDUCERS);
 
@@ -20,7 +20,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();

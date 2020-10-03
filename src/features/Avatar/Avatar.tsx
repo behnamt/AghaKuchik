@@ -1,39 +1,32 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useGlobal } from 'reactn';
-import { CAMERA_CENTER_X, CAMERA_CENTER_Y, SPRITE_WIDTH, SPRITE_MOVEMENT_FRAMES, TILE_WIDTH, EAvatarDirection } from '../../config/constants';
+import { IPosition } from '../../@types/Map';
+import {
+  CAMERA_CENTER_X,
+  CAMERA_CENTER_Y,
+  SPRITE_MOVEMENT_FRAMES, SPRITE_WIDTH,
+  TILE_WIDTH
+} from '../../config/constants';
+import { EAvatarDirection, EkeyboardCode } from '../../config/Enums';
 import { useBoundery } from '../../Hooks/bounderyHook';
-import avatar from './avatar.png';
 
 interface IAvatarProps {
   district: number[][];
   dimensions: { row: number, col: number };
 }
 
-enum EkeyboardCode {
-  Left = 37,
-  Up = 38,
-  Right = 39,
-  Down = 40,
-}
-
-interface ISpritePosition {
-  x: number;
-  y: number;
-}
-
 const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
   const [top, setTop] = useState<number>(0);
   const [left, setLeft] = useState<number>(0);
-  const [spritePosition, setSpritePosition] = useState<ISpritePosition>({ x: 0, y: 0 });
+  const [spritePosition, setSpritePosition] = useState<IPosition>({ x: 0, y: 0 });
   const [position] = useGlobal('position');
   const [direction] = useGlobal('direction');
-
   const { attemptToMove, changeDirection } = useBoundery(props.district, props.dimensions);
 
-  const bindKeyboardListener = useCallback((event: KeyboardEvent) => {
+  const bindKeyboardListener = useCallback((event: KeyboardEvent): void => {
     event.preventDefault();
 
-    switch (event.keyCode) {
+    switch (event.key) {
       case EkeyboardCode.Left:
         direction === EAvatarDirection.Left ? attemptToMove(-1, 0, EAvatarDirection.Left) : changeDirection(EAvatarDirection.Left);
         break;
@@ -68,14 +61,14 @@ const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
     const y = position.y < CAMERA_CENTER_Y ? position.y : CAMERA_CENTER_Y;
     setTop(y * TILE_WIDTH);
 
-    setSpritePosition({ x: direction, y: (spritePosition.y+1) % SPRITE_MOVEMENT_FRAMES });
+    setSpritePosition({ x: direction, y: (spritePosition.y + 1) % SPRITE_MOVEMENT_FRAMES });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position]);
+}, [position]);
 
   return (
     <div style={{
       position: 'absolute',
-      backgroundImage: `url('${avatar}')`,
+      backgroundImage: `url('${process.env.PUBLIC_URL}/img/avatar/avatar.png')`,
       backgroundPositionX: spritePosition.x * SPRITE_WIDTH,
       backgroundPositionY: spritePosition.y * SPRITE_WIDTH,
       width: TILE_WIDTH,

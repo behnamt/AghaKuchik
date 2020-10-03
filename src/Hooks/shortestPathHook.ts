@@ -11,17 +11,16 @@ interface IDijekstra {
   prev: IDijekstra | undefined;
 }
 
-interface IDimensions {
-  row: number;
-  col: number;
+interface IShortestPathHook {
+  getShortestPath: (currentPosition: IPosition, destination: IGraphIndex) => IGraphIndex[];
 }
 
-const useShortestPath = (district: number[][], dimensions: IDimensions) => {
+const useShortestPath = (district: number[][], dimensions: IGraphIndex): IShortestPathHook => {
 
   const [graph, setGraph] = useState<IDijekstra[][]>([[]]);
 
   const resetDistrict = useCallback(
-    () => {
+    (): void => {
       const resultGraph = district.map((row, rowIdx): IDijekstra[] => row.map((col, colIdx): IDijekstra => {
         return { value: col < MAX_PASSABLE_MAP_TILE ? 1 : -1, dist: Infinity, prev: undefined, visited: false, colIdx, rowIdx };
       }));
